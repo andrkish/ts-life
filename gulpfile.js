@@ -17,7 +17,7 @@ gulp.task('copy-html', function() {
   return gulp.src(paths.pages).pipe(gulp.dest('dist'));
 });
 
-var watch = watchify(browserify({
+var watchedBrowserify = watchify(browserify({
   basedir:      '.',
   debug:        true,
   entries:      ['src/main.ts'],
@@ -25,24 +25,36 @@ var watch = watchify(browserify({
   packageCache: {},
 }).plugin(tsify));
 
-function bundle() {
-  return watch
-    .transform('babelify', {
-      presets:    ['es2015'],
-      extensions: ['.ts'],
-    })
+function watchedBundle() {
+  return watchedBrowserify
     .bundle()
     .on('error', fancy_log)
     .pipe(source('bundle.js'))
-    .pipe(buffer())
-    .pipe(sourcemaps.init({ loadMaps: true }))
-    .pipe(uglify())
-    .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('dist'));
 }
 
-gulp.task('default',
-  gulp.series(gulp.parallel('copy-html'), bundle));
+gulp.task('default', gulp.series(gulp.parallel('copy-html'), watchedBundle));
+watchedBrowserify.on('update', watchedBundle);
+watchedBrowserify.on('log', fancy_log);
 
-watch.on('update', bundle);
-watch.on('log', fancy_log);
+
+gulp.task('deploy',
+  gulp.series(gulp.parallel('copy-html'), function() {
+    return browserify({
+      basedir:      '.',
+      debug:        false,
+      entries:      ['src/main.ts'],
+      cache:        {},
+      packageCache: {},
+    })
+      .plugin(tsify)
+      .transform('babelify', {
+        presets:    ['es2015'],
+        extensions: ['.ts'],
+      })
+      .bundle()
+      .pipe(source('bundle.js'))
+      .pipe(buffer())
+      .pipe(uglify())
+      .pipe(gulp.dest('dist'));
+  }));
