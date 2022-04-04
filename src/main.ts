@@ -1,9 +1,25 @@
-import { helloWorld } from './engine';
+import { Render, Game, State } from './engine';
 
-function renderHello(divName: string, name: string) {
-  const elt = document.getElementById(divName);
-  elt.innerText = helloWorld(name);
+function initApp() {
+  const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+  const context = canvas.getContext('2d');
+
+  const img = new Image();
+  img.onload = function() {
+    const state = new State(19, 25);
+    const spriteSize = { width: 32, height: 32 };
+    const fieldSize = { width: 32, height: 32 };
+    const render = new Render(canvas, context, img, fieldSize, spriteSize);
+
+    new Game(state, render);
+  };
+  img.src = 'spritesheet.png';
 }
 
-// it works!
-renderHello('greeting', 'TypeScript');
+if (document.readyState == 'complete') {
+  initApp();
+} else {
+  window.onload = () => {
+    initApp();
+  };
+}
