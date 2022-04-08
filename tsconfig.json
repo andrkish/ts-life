@@ -1,5 +1,6 @@
 {
   "files": ["src/main.ts", "src/engine.ts"],
+  "include": ["libraries/global.d.ts"],
   "compilerOptions": {
     "noImplicitAny": true,
     "target": "es2015"

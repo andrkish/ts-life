@@ -1,4 +1,5 @@
 import { Render, Game, State } from './engine';
+import { setup } from './setup';
 
 function initApp() {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -6,6 +7,7 @@ function initApp() {
 
   const img = new Image();
   img.onload = function() {
+    setup();
     const state = new State(19, 25);
     const spriteSize = { width: 32, height: 32 };
     const fieldSize = { width: 32, height: 32 };

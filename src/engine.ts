@@ -49,6 +49,7 @@ class State {
   }
 
   public doStep():void {
+    //window.logger.log('step');
     const newState = new Array<number>(this.total);
     for (let i = 0; i < this.total; i++) {
       const live = this.nCount(i);
