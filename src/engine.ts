@@ -11,11 +11,13 @@ type CellPoint = {
 class State {
 
   public state:Array<number>;
+  public newState:Array<number>;
   public total:number;
 
   constructor(public rows:number, public columns:number) {
     this.total = rows * columns;
     this.state = new Array<number>(this.total);
+    this.newState = new Array<number>(this.total);
 
     this.glider();
     this.randomize();
@@ -50,7 +52,7 @@ class State {
 
   public doStep():void {
     //window.logger.log('step');
-    const newState = new Array<number>(this.total);
+    const newState = this.newState;
     for (let i = 0; i < this.total; i++) {
       const live = this.nCount(i);
       if (this.state[i] == CellState.Full) {
@@ -68,7 +70,9 @@ class State {
       }
     }
 
+    const tmpState = this.state;
     this.state = newState;
+    this.newState = tmpState;
   }
 
   public randomize() {
