@@ -127,10 +127,19 @@ class Render {
 
 }
 
+class GameOptions {
+
+  constructor(public drawEmpty:boolean) {}
+
+}
+
+
 class Game {
 
   private frames = 0;
-  constructor(public state:State, public render:Render) {
+  constructor(public state:State,
+              public render:Render,
+              private options:GameOptions) {
     this.update();
   }
 
@@ -147,6 +156,11 @@ class Game {
       const p = state.toPoint(i);
       const x = p.column * this.render.field.width;
       const y = p.row * this.render.field.height;
+
+      // don't render empty cells
+      if (!this.options.drawEmpty && state.state[i] == CellState.Empty) {
+        continue;
+      }
       this.render.renderCell(x, y, state.state[i]);
     }
     requestAnimationFrame(this.update);
@@ -157,5 +171,6 @@ class Game {
 export {
   State,
   Render,
+  GameOptions,
   Game
 };

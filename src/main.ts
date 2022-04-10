@@ -1,4 +1,4 @@
-import { Render, Game, State } from './engine';
+import { Render, Game, State, GameOptions } from './engine';
 import { setup } from './setup';
 
 function initApp() {
@@ -13,7 +13,9 @@ function initApp() {
     const fieldSize = { width: 32, height: 32 };
     const render = new Render(canvas, context, img, fieldSize, spriteSize);
 
-    new Game(state, render);
+    const options = new GameOptions(false);
+
+    new Game(state, render, options);
   };
   img.src = 'spritesheet.png';
 }
