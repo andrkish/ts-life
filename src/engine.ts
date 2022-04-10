@@ -129,7 +129,8 @@ class Render {
 
 class GameOptions {
 
-  constructor(public drawEmpty:boolean) {}
+  constructor(public drawEmpty:boolean,
+              public skipFrames:number) {}
 
 }
 
@@ -145,7 +146,7 @@ class Game {
 
   update = () => {
     this.frames += 1;
-    if (this.frames % 5 == 0) {
+    if (this.frames % this.options.skipFrames == 0) {
       this.frames = 0;
       this.state.doStep();
     }

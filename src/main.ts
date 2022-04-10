@@ -13,7 +13,7 @@ function initApp() {
     const fieldSize = { width: 32, height: 32 };
     const render = new Render(canvas, context, img, fieldSize, spriteSize);
 
-    const options = new GameOptions(false);
+    const options = new GameOptions(false, 1);
 
     new Game(state, render, options);
   };
