@@ -18,7 +18,7 @@ class State {
     this.state = new Array<number>(this.total);
 
     this.glider();
-    //this.randomize();
+    this.randomize();
   }
 
   private glider() {
@@ -74,7 +74,7 @@ class State {
   public randomize() {
     for (let i = 0; i < this.total; i++) {
       const r = Math.random();
-      this.state[i] = r > 0.5 ?
+      this.state[i] = r > 0.9 ?
         CellState.Full :
         CellState.Empty;
     }
