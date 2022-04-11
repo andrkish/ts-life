@@ -1,4 +1,4 @@
-import { Render, Game, State, GameOptions } from './engine';
+import { Render, RenderImageData, Game, State, GameOptions } from './engine';
 import { setup } from './setup';
 
 function create32x32(canvas:HTMLCanvasElement,
@@ -20,7 +20,8 @@ function create1x1(canvas:HTMLCanvasElement,
   const state = new State(608, 800);
   const spriteSize = { width: 1, height: 1 };
   const fieldSize = { width: 1, height: 1 };
-  const render = new Render(canvas, context, img, fieldSize, spriteSize);
+  //const render = new Render(canvas, context, img, fieldSize, spriteSize);
+  const render = new RenderImageData(canvas, context);
 
   const options = new GameOptions(false, 1);
 
@@ -30,6 +31,7 @@ function create1x1(canvas:HTMLCanvasElement,
 function initApp() {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
   const context = canvas.getContext('2d');
+  context.imageSmoothingEnabled = false;
 
   const img = new Image();
   img.onload = function() {

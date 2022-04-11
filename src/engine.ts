@@ -108,7 +108,43 @@ type FieldSize = {
 
 interface IRender {
   clear():void;
-  renderCell(x:number, y:number, s:CellState):void;
+  flush():void;
+  renderCell(index: number, x:number, y:number, s:CellState):void;
+}
+
+class RenderImageData implements IRender {
+
+  private img:ImageData;
+
+  constructor(public canvas:HTMLCanvasElement,
+              public context:CanvasRenderingContext2D) {
+    this.img = context.createImageData(canvas.width, canvas.height);
+  }
+  public clear(): void {
+    for (let i = 0; i < this.img.data.length; i += 1) {
+      this.img.data[i] = 255;
+    }
+
+    this.flush();
+  }
+
+  public flush(): void {
+    this.context.putImageData(this.img, 0, 0);
+  }
+
+  public renderCell(index:number, x: number, y: number, s: CellState): void {
+    if (s == CellState.Empty) {
+      return;
+    }
+
+    const r = index * 4;
+    const g = r + 1;
+    const b = r + 2;
+    this.img.data[g] = 0;
+    this.img.data[b] = 0;
+  }
+
+
 }
 
 class Render implements IRender {
@@ -123,7 +159,11 @@ class Render implements IRender {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  public renderCell(x:number, y:number, s:CellState):void {
+  public flush():void {
+    //
+  }
+
+  public renderCell(index:number, x:number, y:number, s:CellState):void {
     x *= this.field.width;
     y *= this.field.height;
     let sx = 0;
@@ -173,8 +213,9 @@ class Game {
       if (!this.options.drawEmpty && state.state[i] == CellState.Empty) {
         continue;
       }
-      this.render.renderCell(x, y, state.state[i]);
+      this.render.renderCell(i, x, y, state.state[i]);
     }
+    this.render.flush();
     requestAnimationFrame(this.update);
   }
 
@@ -183,6 +224,7 @@ class Game {
 export {
   State,
   IRender,
+  RenderImageData,
   Render,
   GameOptions,
   Game
