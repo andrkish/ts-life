@@ -106,7 +106,12 @@ type FieldSize = {
   height: number,
 }
 
-class Render {
+interface IRender {
+  clear():void;
+  renderCell(x:number, y:number, s:CellState):void;
+}
+
+class Render implements IRender {
 
   constructor(public canvas:HTMLCanvasElement,
               public context:CanvasRenderingContext2D,
@@ -119,6 +124,8 @@ class Render {
   }
 
   public renderCell(x:number, y:number, s:CellState):void {
+    x *= this.field.width;
+    y *= this.field.height;
     let sx = 0;
     const sy = 0;
     if (s == CellState.Full) {
@@ -143,7 +150,7 @@ class Game {
 
   private frames = 0;
   constructor(public state:State,
-              public render:Render,
+              public render:IRender,
               private options:GameOptions) {
     this.update();
   }
@@ -159,8 +166,8 @@ class Game {
     const state = this.state;
     for (let i = 0; i < state.total; i++) {
       const p = state.toPoint(i);
-      const x = p.column * this.render.field.width;
-      const y = p.row * this.render.field.height;
+      const x = p.column;
+      const y = p.row;
 
       // don't render empty cells
       if (!this.options.drawEmpty && state.state[i] == CellState.Empty) {
@@ -175,6 +182,7 @@ class Game {
 
 export {
   State,
+  IRender,
   Render,
   GameOptions,
   Game

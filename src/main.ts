@@ -35,7 +35,9 @@ function initApp() {
   img.onload = function() {
     setup();
     create1x1(canvas, context, img);
+    //create32x32(canvas, context, img);
   };
+  //img.src = 'spritesheet.png';
   img.src = 'sprite1x1.png';
 }
 
