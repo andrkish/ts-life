@@ -8,7 +8,14 @@ type CellPoint = {
   column: number,
 }
 
-class State {
+interface IState {
+  doStep():void,
+  toPoint(index:number):CellPoint,
+  getState(index:number):CellState,
+  get total():number
+}
+
+class State implements IState {
 
   public state:Array<number>;
   public newState:Array<number>;
@@ -21,6 +28,10 @@ class State {
 
     this.glider();
     this.randomize();
+  }
+
+  public getState(index:number):CellState {
+    return this.state[index];
   }
 
   private glider() {
@@ -189,7 +200,7 @@ class GameOptions {
 class Game {
 
   private frames = 0;
-  constructor(public state:State,
+  constructor(public state:IState,
               public render:IRender,
               private options:GameOptions) {
     this.update();
@@ -210,10 +221,10 @@ class Game {
       const y = p.row;
 
       // don't render empty cells
-      if (!this.options.drawEmpty && state.state[i] == CellState.Empty) {
+      if (!this.options.drawEmpty && state.getState(i) == CellState.Empty) {
         continue;
       }
-      this.render.renderCell(i, x, y, state.state[i]);
+      this.render.renderCell(i, x, y, state.getState(i));
     }
     this.render.flush();
     requestAnimationFrame(this.update);
@@ -222,6 +233,7 @@ class Game {
 }
 
 export {
+  IState,
   State,
   IRender,
   RenderImageData,
